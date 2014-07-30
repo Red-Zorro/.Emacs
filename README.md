@@ -1,4 +1,0 @@
-.Emacs
-======
-
-Emacs Configuration
