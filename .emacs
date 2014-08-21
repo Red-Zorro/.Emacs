@@ -1,5 +1,5 @@
 (if (string-equal "darwin" (symbol-name system-type))
-      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
+      (setenv "PATH" (concat "/usr/local/bin:/opt/local/bin:/opt/local/sbin:" (getenv "PATH"))))
 ;;set the default file path
 (setq default-directory "~/Desktop/")
 
@@ -27,6 +27,8 @@
 (global-set-key (kbd "C-c <right>") 'ecb-goto-window-methods)
 (global-set-key (kbd "C-c <down>") 'ecb-goto-window-history)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+
+(add-hook 'c++-mode-hook (lambda((setq compile-command "g++ -ggdb")))) 
 
 (require 'ctypes)
 (ctypes-auto-parse-mode 1)
@@ -72,7 +74,39 @@
 (setq ecb-layout-name "leftright2")
 (setq ecb-windows-height 0.5)
 (setq ecb-windows-width 0.15)
-(setq ecb-auto-activate t)
+;;(setq ecb-auto-activate t)
+
+;;configure auctex
+(setenv "PATH" (concat "/usr/texbin:/usr/local/bin:" (getenv "PATH")))
+(setq exec-path (append '("/usr/texbin" "/usr/local/bin") exec-path))
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+(add-hook 'LaTeX-mode-hook 'visual-line-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex) 
+(add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+(setq reftex-plug-into-AUCTeX t)
+(setq TeX-PDF-mode t)
+(add-hook 'LaTeX-mode-hook 
+          (lambda () 
+            (turn-on-reftex) 
+            (setq reftex-plug-into-AUCTeX t)
+			(setq compile-command "xelatex "))) 
+(setq TeX-PDF-mode t) 
+(setq TeX-view-program-selection 
+      '(((output-dvi style-pstricks) 
+         "dvips and PDF Viewer") 
+        (output-dvi "PDF Viewer") 
+        (output-pdf "PDF Viewer") 
+        (output-html "Safari"))) 
+(setq TeX-view-program-list 
+      '(("dvips and PDF Viewer" "%(o?)dvips %d -o && open %f") 
+        ("PDF Viewer" "open %o") 
+        ("Safari" "open %o")))
 
 ;;parenthess jump
 (define-key global-map (kbd "C-x m") 'match-paren)
